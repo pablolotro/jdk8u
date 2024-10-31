@@ -268,6 +268,7 @@ final class ProcessEnvironment extends HashMap<String,String>
 
     // Only for use by System.getenv(String)
     static String getenv(String name) {
+        System.out.println("env get >> "+name);
         // The original implementation used a native call to _wgetenv,
         // but it turns out that _wgetenv is only consistent with
         // GetEnvironmentStringsW (for non-ASCII) if `wmain' is used
@@ -281,6 +282,7 @@ final class ProcessEnvironment extends HashMap<String,String>
 
     // Only for use by System.getenv()
     static Map<String,String> getenv() {
+        System.out.println("env get all");
         return theUnmodifiableEnvironment;
     }
 

@@ -390,7 +390,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).get(obj);
+        Object result = getFieldAccessor(obj).get(obj);
+        System.out.println("field "+this+" get +>> "+obj+" =>> "+result);
+        return result;
     }
 
     /**

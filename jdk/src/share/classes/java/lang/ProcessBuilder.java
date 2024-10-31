@@ -198,6 +198,7 @@ public final class ProcessBuilder
     public ProcessBuilder(List<String> command) {
         if (command == null)
             throw new NullPointerException();
+        System.out.println("process >> "+Arrays.toString(command.toArray(new String[0])));
         this.command = command;
     }
 
@@ -213,6 +214,7 @@ public final class ProcessBuilder
      * @param command a string array containing the program and its arguments
      */
     public ProcessBuilder(String... command) {
+        System.out.println("process >> "+Arrays.toString(command));
         this.command = new ArrayList<>(command.length);
         for (String arg : command)
             this.command.add(arg);
@@ -234,6 +236,7 @@ public final class ProcessBuilder
     public ProcessBuilder command(List<String> command) {
         if (command == null)
             throw new NullPointerException();
+        System.out.println("process new command >> "+Arrays.toString(command.toArray(new String[0])));
         this.command = command;
         return this;
     }
@@ -250,6 +253,7 @@ public final class ProcessBuilder
      * @return this process builder
      */
     public ProcessBuilder command(String... command) {
+        System.out.println("process new command >> "+Arrays.toString(command));
         this.command = new ArrayList<>(command.length);
         for (String arg : command)
             this.command.add(arg);

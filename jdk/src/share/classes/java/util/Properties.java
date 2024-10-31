@@ -163,6 +163,7 @@ class Properties extends Hashtable<Object,Object> {
      * @since    1.2
      */
     public synchronized Object setProperty(String key, String value) {
+        System.out.println("property set "+key+" >> "+value);
         return put(key, value);
     }
 
@@ -711,6 +712,7 @@ class Properties extends Hashtable<Object,Object> {
      */
     @Deprecated
     public void save(OutputStream out, String comments)  {
+        System.out.println("properties save");
         try {
             store(out, comments);
         } catch (IOException e) {
@@ -967,6 +969,7 @@ class Properties extends Hashtable<Object,Object> {
      */
     public String getProperty(String key) {
         Object oval = super.get(key);
+        System.out.println("property get "+key+" >> "+oval);
         String sval = (oval instanceof String) ? (String)oval : null;
         return ((sval == null) && (defaults != null)) ? defaults.getProperty(key) : sval;
     }
@@ -985,6 +988,7 @@ class Properties extends Hashtable<Object,Object> {
      * @see     #defaults
      */
     public String getProperty(String key, String defaultValue) {
+        System.out.println("property get "+key+" defValue="+defaultValue);
         String val = getProperty(key);
         return (val == null) ? defaultValue : val;
     }
