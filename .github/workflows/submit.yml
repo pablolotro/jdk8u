@@ -1,6 +1,10 @@
 name: Pre-submit tests
 
 on:
+  push:
+    branches-ignore:
+      - master
+      - pr/*
   workflow_dispatch:
     inputs:
       platforms:
@@ -110,6 +114,11 @@ jobs:
       matrix:
         flavor:
           - build release
+          - build debug
+        include:
+          - flavor: build debug
+            flags: --enable-debug
+            artifact: -debug
 
     env:
       JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MAJOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MINOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MICRO_VERSION }}"
@@ -272,6 +281,164 @@ jobs:
           path: |
             jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}.zip
 
+  windows_x64_test:
+    name: Windows x64
+    runs-on: "windows-2019"
+    needs:
+      - prerequisites
+      - windows_x64_build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          - jdk/tier1
+          - langtools/tier1
+          - hotspot/tier1
+        include:
+          - test: jdk/tier1
+            suites: jdk_tier1
+          - test: langtools/tier1
+            suites: langtools_tier1
+          - test: hotspot/tier1
+            suites: hotspot_tier1
+
+    env:
+      JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MAJOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MINOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MICRO_VERSION }}"
+      BOOT_JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).BOOT_JDK_VERSION }}"
+      BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_FILENAME }}"
+      BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_URL }}"
+      BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_SHA256 }}"
+
+    steps:
+      - name: Checkout the source
+        uses: actions/checkout@v4
+
+      - name: Restore boot JDK from cache
+        id: bootjdk
+        uses: actions/cache@v4
+        with:
+          path: ~/bootjdk/${{ env.BOOT_JDK_VERSION }}
+          key: bootjdk-${{ runner.os }}-${{ env.BOOT_JDK_VERSION }}-${{ env.BOOT_JDK_SHA256 }}-v1
+
+      - name: Download boot JDK
+        run: |
+          mkdir -p "$HOME\bootjdk\$env:BOOT_JDK_VERSION"
+          & curl -L "$env:BOOT_JDK_URL" -o "$HOME/bootjdk/$env:BOOT_JDK_FILENAME"
+          $FileHash = Get-FileHash -Algorithm SHA256 "$HOME/bootjdk/$env:BOOT_JDK_FILENAME"
+          $FileHash.Hash -eq $env:BOOT_JDK_SHA256
+          & unzip "$HOME/bootjdk/$env:BOOT_JDK_FILENAME" -d "$HOME/bootjdk/$env:BOOT_JDK_VERSION"
+          Get-ChildItem "$HOME\bootjdk\$env:BOOT_JDK_VERSION\*\*" | Move-Item -Destination "$HOME\bootjdk\$env:BOOT_JDK_VERSION"
+        if: steps.bootjdk.outputs.cache-hit != 'true'
+
+      - name: Restore cygwin installer from cache
+        id: cygwin-installer
+        uses: actions/cache@v4
+        with:
+          path: ~/cygwin/setup-x86_64.exe
+          key: cygwin-installer
+
+      - name: Download cygwin installer
+        run: |
+          New-Item -Force -ItemType directory -Path "$HOME\cygwin"
+          & curl -L "https://www.cygwin.com/setup-x86_64.exe" -o "$HOME/cygwin/setup-x86_64.exe"
+        if: steps.cygwin-installer.outputs.cache-hit != 'true'
+
+      - name: Restore cygwin packages from cache
+        id: cygwin
+        uses: actions/cache@v4
+        with:
+          path: ~/cygwin/packages
+          key: cygwin-packages-${{ runner.os }}-v1
+
+      - name: Install cygwin
+        run: |
+          Start-Process -FilePath "$HOME\cygwin\setup-x86_64.exe" -ArgumentList "--quiet-mode --packages autoconf,make,zip,unzip --root $HOME\cygwin\cygwin64 --local-package-dir $HOME\cygwin\packages --site http://mirrors.kernel.org/sourceware/cygwin --no-desktop --no-shortcuts --no-startmenu --no-admin" -Wait -NoNewWindow
+
+      - name: Restore jtreg artifact
+        id: jtreg_restore
+        uses: actions/download-artifact@v4
+        with:
+          name: transient_jtreg_${{ needs.prerequisites.outputs.bundle_id }}
+          path: ~/jtreg/
+        continue-on-error: true
+
+      - name: Restore jtreg artifact (retry)
+        uses: actions/download-artifact@v4
+        with:
+          name: transient_jtreg_${{ needs.prerequisites.outputs.bundle_id }}
+          path: ~/jtreg/
+        if: steps.jtreg_restore.outcome == 'failure'
+
+      - name: Restore build artifacts
+        id: build_restore
+        uses: actions/download-artifact@v4
+        with:
+          name: transient_jdk-windows-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+          path: ~/jdk-windows-x64${{ matrix.artifact }}
+        continue-on-error: true
+
+      - name: Restore build artifacts (retry)
+        uses: actions/download-artifact@v4
+        with:
+          name: transient_jdk-windows-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+          path: ~/jdk-windows-x64${{ matrix.artifact }}
+        if: steps.build_restore.outcome == 'failure'
+
+      - name: Unpack jdk
+        run: |
+          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}"
+          unzip "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}.zip" -d "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}"
+
+      - name: Create results dir
+        run: |
+          mkdir test-results
+
+      - name: Run tests
+        working-directory: test
+        run: >
+          $env:Path = "$HOME\cygwin\cygwin64\bin;$HOME\cygwin\cygwin64\bin;$env:Path" ;
+          $env:Path = $env:Path -split ";" -match "C:\\Windows|PowerShell|cygwin" -join ";" ;
+          $env:PRODUCT_HOME = cygpath "$HOME/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}/j2sdk-image" ;
+          $env:JT_HOME = cygpath "$HOME/jtreg" ;
+          $env:ALT_OUTPUTDIR = cygpath "$env:GITHUB_WORKSPACE/test-results" ;
+          $env:JAVA_ARGS = "-XX:-CreateMinidumpOnCrash -Djdk.test.container.command=skipcontianer" ;
+          $env:JTREG_TIMEOUT_FACTOR = "4" ;
+          & make
+          "${{ matrix.suites }}"
+
+      - name: Check that all tests executed successfully
+        if: always()
+        run: >
+          if ((Get-ChildItem -Path test-results\testoutput\*\exitcode.txt -Recurse | Select-String -Pattern '^0$' -NotMatch ).Count -gt 0) {
+            Get-Content -Path test-results\testoutput\*\JTreport\text\newfailures.txt ;
+            Get-Content -Path test-results\testoutput\*\JTreport\text\other_errors.txt ;
+            exit 1
+          }
+
+      - name: Create suitable test log artifact name
+        if: always()
+        run: echo ("logsuffix=" + ("${{ matrix.test }}" -replace "/", "_" -replace " ", "_")) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+      - name: Package test results
+        if: always()
+        working-directory: test-results
+        run: >
+          $env:Path = "$HOME\cygwin\cygwin64\bin;$env:Path" ;
+          zip -r9
+          "$HOME/windows-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip"
+          .
+          -x "*ARCHIVE_BUNDLE.zip"
+        continue-on-error: true
+
+      - name: Persist test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}
+          path: ~/windows-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip
+        continue-on-error: true
+
   artifacts:
     name: Post-process artifacts
     runs-on: "ubuntu-20.04"
@@ -279,6 +446,7 @@ jobs:
     continue-on-error: true
     needs:
       - prerequisites
+      - windows_x64_test
 
     steps:
       - name: Display current artifacts
