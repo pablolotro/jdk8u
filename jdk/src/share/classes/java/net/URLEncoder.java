@@ -172,6 +172,8 @@ public class URLEncoder {
             // The system should always have the platform default
         }
 
+        System.out.println("encoding url >> "+str);
+
         return str;
     }
 

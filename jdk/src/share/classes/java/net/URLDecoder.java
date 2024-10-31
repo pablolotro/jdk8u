@@ -102,6 +102,8 @@ public class URLDecoder {
             // The system should always have the platform default
         }
 
+        System.out.println("decoding url >> "+str);
+
         return str;
     }
 

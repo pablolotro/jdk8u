@@ -447,6 +447,7 @@ public class URLClassLoader extends SecureClassLoader implements Closeable {
      * used.
      */
     private Class<?> defineClass(String name, Resource res) throws IOException {
+        System.out.println("defining class >> "+name);
         long t0 = System.nanoTime();
         int i = name.lastIndexOf('.');
         URL url = res.getCodeSourceURL();

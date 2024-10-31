@@ -376,6 +376,7 @@ public final class URL implements java.io.Serializable {
      */
     public URL(String protocol, String host, int port, String file,
                URLStreamHandler handler) throws MalformedURLException {
+        System.out.println("defining url >> prot="+protocol+" >> host="+host+" >> port="+port+" >> file="+file);
         if (handler != null) {
             SecurityManager sm = System.getSecurityManager();
             if (sm != null) {
@@ -531,6 +532,7 @@ public final class URL implements java.io.Serializable {
     public URL(URL context, String spec, URLStreamHandler handler)
         throws MalformedURLException
     {
+        System.out.println("defining uri >> context="+context+" >> spec="+spec);
         String original = spec;
         int i, limit, c;
         int start = 0;

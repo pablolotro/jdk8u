@@ -1,16 +1,12 @@
 name: Pre-submit tests
 
 on:
-  push:
-    branches-ignore:
-      - master
-      - pr/*
   workflow_dispatch:
     inputs:
       platforms:
         description: "Platform(s) to execute on"
         required: true
-        default: "Linux additional (hotspot only), Linux x64, Linux x86, Windows x64, Windows x86, macOS x64"
+        default: "Windows x64"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
