@@ -110,11 +110,6 @@ jobs:
       matrix:
         flavor:
           - build release
-          - build debug
-        include:
-          - flavor: build debug
-            flags: --enable-debug
-            artifact: -debug
 
     env:
       JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MAJOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MINOR_VERSION }}.${{ fromJson(needs.prerequisites.outputs.dependencies).JDK_MICRO_VERSION }}"
