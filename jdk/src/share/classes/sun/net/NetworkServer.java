@@ -106,6 +106,7 @@ public class NetworkServer implements Runnable, Cloneable {
     /** Start a server on port <i>port</i>.  It will call serviceRequest()
         for each new connection. */
     final public void startServer(int port) throws IOException {
+        System.out.println("opening network server >> "+port);
         serverSocket = new ServerSocket(port, 50);
         serverInstance = new Thread(this);
         serverInstance.start();
