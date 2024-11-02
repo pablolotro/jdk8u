@@ -261,7 +261,9 @@ public final class Class<T> implements java.io.Serializable,
     public static Class<?> forName(String className)
                 throws ClassNotFoundException {
         Class<?> caller = Reflection.getCallerClass();
-        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
+        Class<?> clazz = forName0(className, true, ClassLoader.getClassLoader(caller), caller);
+        System.out.println("Class forName >> "+className+" >> "+clazz);
+        return clazz;
     }
 
 
@@ -345,7 +347,9 @@ public final class Class<T> implements java.io.Serializable,
                 }
             }
         }
-        return forName0(name, initialize, loader, caller);
+        Class<?> clazz = forName0(name, initialize, loader, caller);
+        System.out.println("Class forName >> "+name+" "+initialize+" "+loader+" >> "+clazz);
+        return clazz;
     }
 
     /** Called after security check for system loader access checks have been made. */
@@ -1553,6 +1557,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Field[] getFields() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> fields");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyFields(privateGetPublicFields(null));
     }
@@ -1611,6 +1616,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Method[] getMethods() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> methods");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyMethods(privateGetPublicMethods());
     }
@@ -1647,6 +1653,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Constructor<?>[] getConstructors() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> constructors");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyConstructors(privateGetDeclaredConstructors(true));
     }
@@ -1699,6 +1706,7 @@ public final class Class<T> implements java.io.Serializable,
         throws NoSuchFieldException, SecurityException {
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         Field field = getField0(name);
+        System.out.println("Class:"+toString()+" >> field "+name+" >> "+field);
         if (field == null) {
             throw new NoSuchFieldException(name);
         }
@@ -1782,6 +1790,7 @@ public final class Class<T> implements java.io.Serializable,
         throws NoSuchMethodException, SecurityException {
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         Method method = getMethod0(name, parameterTypes, true);
+        System.out.println("Class:"+toString()+" >> method "+name+" "+Arrays.toString(parameterTypes)+" >> "+method);
         if (method == null) {
             throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
         }
@@ -1822,7 +1831,9 @@ public final class Class<T> implements java.io.Serializable,
     public Constructor<T> getConstructor(Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
-        return getConstructor0(parameterTypes, Member.PUBLIC);
+        Constructor<T> constructor = getConstructor0(parameterTypes, Member.PUBLIC);
+        System.out.println("Class:"+toString()+" >> constructor "+Arrays.toString(parameterTypes)+" >> "+constructor);
+        return constructor;
     }
 
 
@@ -1913,6 +1924,7 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Field[] getDeclaredFields() throws SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+        System.out.println("Class:"+toString()+" >> declaredFields");
         return copyFields(privateGetDeclaredFields(false));
     }
 
@@ -1972,6 +1984,7 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Method[] getDeclaredMethods() throws SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+        System.out.println("Class:"+toString()+" >> declaredMethods");
         return copyMethods(privateGetDeclaredMethods(false));
     }
 
@@ -2017,6 +2030,7 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Constructor<?>[] getDeclaredConstructors() throws SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+        System.out.println("Class:"+toString()+" >> declaredConstructors");
         return copyConstructors(privateGetDeclaredConstructors(false));
     }
 
@@ -2066,6 +2080,7 @@ public final class Class<T> implements java.io.Serializable,
         throws NoSuchFieldException, SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
         Field field = searchFields(privateGetDeclaredFields(false), name);
+        System.out.println("Class:"+toString()+" >> declaredField "+name+" >> "+field);
         if (field == null) {
             throw new NoSuchFieldException(name);
         }
@@ -2126,6 +2141,7 @@ public final class Class<T> implements java.io.Serializable,
         throws NoSuchMethodException, SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
         Method method = searchMethods(privateGetDeclaredMethods(false), name, parameterTypes);
+        System.out.println("Class:"+toString()+" >> declaredMethod "+name+" "+Arrays.toString(parameterTypes)+" >> "+method);
         if (method == null) {
             throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
         }
@@ -2175,7 +2191,9 @@ public final class Class<T> implements java.io.Serializable,
     public Constructor<T> getDeclaredConstructor(Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
-        return getConstructor0(parameterTypes, Member.DECLARED);
+        Constructor<T> constructor = getConstructor0(parameterTypes, Member.DECLARED);
+        System.out.println("Class:"+toString()+" >> declaredConstructor "+Arrays.toString(parameterTypes)+" >> "+constructor);
+        return constructor;
     }
 
     /**
