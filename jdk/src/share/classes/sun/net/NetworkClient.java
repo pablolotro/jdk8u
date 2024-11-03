@@ -131,7 +131,6 @@ public class NetworkClient {
     /** Open a connection to the server. */
     public void openServer(String server, int port)
         throws IOException, UnknownHostException {
-        System.out.println("NetworkClient open >> "+server+":"+port);
         if (serverSocket != null)
             closeServer();
         serverSocket = doConnect (server, port);

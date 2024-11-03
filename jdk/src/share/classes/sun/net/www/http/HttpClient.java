@@ -205,7 +205,6 @@ public class HttpClient extends NetworkClient {
 
 
     protected HttpClient() {
-        System.out.println("HttpClient");
     }
 
     private HttpClient(URL url)
@@ -232,7 +231,6 @@ public class HttpClient extends NetworkClient {
     }
 
     protected HttpClient(URL url, Proxy p, int to) throws IOException {
-        System.out.println("HttpClient >> "+url+" >> "+p+" >> "+to);
         proxy = (p == null) ? Proxy.NO_PROXY : p;
         this.host = url.getHost();
         this.url = url;
@@ -464,7 +462,6 @@ public class HttpClient extends NetworkClient {
      */
     @Override
     public void openServer(String server, int port) throws IOException {
-        System.out.println("HttpClient >> open "+server+":"+port);
         serverSocket = doConnect(server, port);
         try {
             OutputStream out = serverSocket.getOutputStream();
