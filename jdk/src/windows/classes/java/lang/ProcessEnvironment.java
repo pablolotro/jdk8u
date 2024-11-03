@@ -94,10 +94,13 @@ final class ProcessEnvironment extends HashMap<String,String>
     }
 
     public String put(String key, String value) {
+        System.out.println("ProcessEnvironment << "+key+" << "+value);
         return super.put(validateName(key), validateValue(value));
     }
 
     public String get(Object key) {
+        String value = super.get(nonNullString(key));
+        System.out.println("ProcessEnvironment >> "+key+" >> "+value);
         return super.get(nonNullString(key));
     }
 
@@ -110,6 +113,7 @@ final class ProcessEnvironment extends HashMap<String,String>
     }
 
     public String remove(Object key) {
+        System.out.println("ProcessEnvironment >> remove "+key);
         return super.remove(nonNullString(key));
     }
 
@@ -276,11 +280,14 @@ final class ProcessEnvironment extends HashMap<String,String>
         // case-insensitive comparison ourselves.  At least this
         // guarantees that System.getenv().get(String) will be
         // consistent with System.getenv(String).
-        return theCaseInsensitiveEnvironment.get(name);
+        String value = theCaseInsensitiveEnvironment.get(name);
+        System.out.println("ProcessEnvironment >> "+name+" >> "+value);
+        return value;
     }
 
     // Only for use by System.getenv()
     static Map<String,String> getenv() {
+        System.out.println("ProcessEnvironment >> all");
         return theUnmodifiableEnvironment;
     }
 
