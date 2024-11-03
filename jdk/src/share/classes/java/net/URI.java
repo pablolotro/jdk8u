@@ -585,6 +585,7 @@ public final class URI
      *          by the above deviations
      */
     public URI(String str) throws URISyntaxException {
+        System.out.println("URI >> "+str);
         new Parser(str).parse(false);
     }
 
@@ -669,6 +670,7 @@ public final class URI
         String s = toString(scheme, null,
                             null, userInfo, host, port,
                             path, query, fragment);
+        System.out.println("URI >> "+s);
         checkPath(s, scheme, path);
         new Parser(s).parse(true);
     }
@@ -742,6 +744,7 @@ public final class URI
         String s = toString(scheme, null,
                             authority, null, null, -1,
                             path, query, fragment);
+        System.out.println("URI >> "+s);
         checkPath(s, scheme, path);
         new Parser(s).parse(false);
     }
@@ -814,10 +817,11 @@ public final class URI
     public URI(String scheme, String ssp, String fragment)
         throws URISyntaxException
     {
-        new Parser(toString(scheme, ssp,
-                            null, null, null, -1,
-                            null, null, fragment))
-            .parse(false);
+        String s = toString(scheme, ssp,
+            null, null, null, -1,
+            null, null, fragment);
+        System.out.println("URI >> "+s);
+        new Parser(s).parse(false);
     }
 
     /**
