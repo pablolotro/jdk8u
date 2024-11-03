@@ -390,7 +390,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).get(obj);
+        Object value = getFieldAccessor(obj).get(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -425,7 +427,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getBoolean(obj);
+        boolean value = getFieldAccessor(obj).getBoolean(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -460,7 +464,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getByte(obj);
+        byte value = getFieldAccessor(obj).getByte(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -497,7 +503,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getChar(obj);
+        char value = getFieldAccessor(obj).getChar(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -534,7 +542,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getShort(obj);
+        short value = getFieldAccessor(obj).getShort(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -571,7 +581,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getInt(obj);
+        int value = getFieldAccessor(obj).getInt(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -608,7 +620,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getLong(obj);
+        long value = getFieldAccessor(obj).getLong(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -645,7 +659,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getFloat(obj);
+        float value = getFieldAccessor(obj).getFloat(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -682,7 +698,9 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
-        return getFieldAccessor(obj).getDouble(obj);
+        double value = getFieldAccessor(obj).getDouble(obj);
+        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+        return value;
     }
 
     /**
@@ -761,6 +779,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+value);
         getFieldAccessor(obj).set(obj, value);
     }
 
@@ -798,6 +817,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+z);
         getFieldAccessor(obj).setBoolean(obj, z);
     }
 
@@ -835,6 +855,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+b);
         getFieldAccessor(obj).setByte(obj, b);
     }
 
@@ -872,6 +893,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+c);
         getFieldAccessor(obj).setChar(obj, c);
     }
 
@@ -909,6 +931,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+s);
         getFieldAccessor(obj).setShort(obj, s);
     }
 
@@ -946,6 +969,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+i);
         getFieldAccessor(obj).setInt(obj, i);
     }
 
@@ -983,6 +1007,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+l);
         getFieldAccessor(obj).setLong(obj, l);
     }
 
@@ -1020,6 +1045,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+f);
         getFieldAccessor(obj).setFloat(obj, f);
     }
 
@@ -1057,6 +1083,7 @@ class Field extends AccessibleObject implements Member {
                 checkAccess(caller, clazz, obj, modifiers);
             }
         }
+        System.out.println("Field:"+toString()+" << "+obj+" << "+d);
         getFieldAccessor(obj).setDouble(obj, d);
     }
 
