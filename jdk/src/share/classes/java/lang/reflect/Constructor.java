@@ -36,7 +36,6 @@ import sun.reflect.generics.factory.GenericsFactory;
 import sun.reflect.generics.scope.ConstructorScope;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.AnnotationFormatError;
-import java.util.Arrays;
 
 /**
  * {@code Constructor} provides information about, and access to, a single
@@ -422,7 +421,6 @@ public final class Constructor<T> extends Executable {
         }
         @SuppressWarnings("unchecked")
         T inst = (T) ca.newInstance(initargs);
-        System.out.println("Constuctor:"+toString()+" >> "+Arrays.toString(initargs)+" >> "+inst);
         return inst;
     }
 

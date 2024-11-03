@@ -37,7 +37,6 @@ import sun.reflect.annotation.AnnotationParser;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.AnnotationFormatError;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * A {@code Method} provides information about, and access to, a single method
@@ -496,9 +495,7 @@ public final class Method extends Executable {
         if (ma == null) {
             ma = acquireMethodAccessor();
         }
-        Object value = ma.invoke(obj, args);
-        System.out.println("Method:"+toString()+" >> "+obj+" >> "+Arrays.toString(args)+" >> "+value);
-        return value;
+        return ma.invoke(obj, args);
     }
 
     /**
