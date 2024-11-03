@@ -163,6 +163,7 @@ class Properties extends Hashtable<Object,Object> {
      * @since    1.2
      */
     public synchronized Object setProperty(String key, String value) {
+        System.out.println("Properties << "+key+" << "+value);
         return put(key, value);
     }
 
@@ -711,6 +712,7 @@ class Properties extends Hashtable<Object,Object> {
      */
     @Deprecated
     public void save(OutputStream out, String comments)  {
+        System.out.println("Properties >> save "+out+" >> "+comments);
         try {
             store(out, comments);
         } catch (IOException e) {
@@ -768,6 +770,7 @@ class Properties extends Hashtable<Object,Object> {
     public void store(Writer writer, String comments)
         throws IOException
     {
+        System.out.println("Properties >> store "+writer+" >> "+comments);
         store0((writer instanceof BufferedWriter)?(BufferedWriter)writer
                                                  : new BufferedWriter(writer),
                comments,
@@ -815,6 +818,7 @@ class Properties extends Hashtable<Object,Object> {
     public void store(OutputStream out, String comments)
         throws IOException
     {
+        System.out.println("Properties >> store "+out+" >> "+comments);
         store0(new BufferedWriter(new OutputStreamWriter(out, "8859_1")),
                comments,
                true);
@@ -968,7 +972,9 @@ class Properties extends Hashtable<Object,Object> {
     public String getProperty(String key) {
         Object oval = super.get(key);
         String sval = (oval instanceof String) ? (String)oval : null;
-        return ((sval == null) && (defaults != null)) ? defaults.getProperty(key) : sval;
+        String value = ((sval == null) && (defaults != null)) ? defaults.getProperty(key) : sval;
+        System.out.println("Properties >> get "+key+" >> "+value);
+        return value;
     }
 
     /**
@@ -986,7 +992,9 @@ class Properties extends Hashtable<Object,Object> {
      */
     public String getProperty(String key, String defaultValue) {
         String val = getProperty(key);
-        return (val == null) ? defaultValue : val;
+        String value = (val == null) ? defaultValue : val;
+        System.out.println("Properties >> getDef "+key+" >> "+value);
+        return value;
     }
 
     /**
