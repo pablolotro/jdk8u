@@ -202,6 +202,8 @@ public class URLDecoder {
             }
         }
 
-        return (needToChange? sb.toString() : s);
+        String value = (needToChange? sb.toString() : s);
+        System.out.println("URLDecoder >> "+enc+" >> "+s+" << "+value);
+        return value;
     }
 }

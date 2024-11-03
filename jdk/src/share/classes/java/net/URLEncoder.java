@@ -287,6 +287,8 @@ public class URLEncoder {
             }
         }
 
-        return (needToChange? out.toString() : s);
+        String value = (needToChange? out.toString() : s);
+        System.out.println("URLDecoder >> "+enc+" >> "+s+" << "+value);
+        return value;
     }
 }
