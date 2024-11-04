@@ -2144,7 +2144,7 @@ public class Cipher {
             }
 
             chooseFirstProvider();
-            byte[] value = spi.engineDoFinal(null, 0, 0, output, outputOffset);
+            int value = spi.engineDoFinal(null, 0, 0, output, outputOffset);
             System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >> "+Arrays.toString(value));
             return value;
         } catch(Throwable exc) {
