@@ -232,18 +232,23 @@ public class HttpClient extends NetworkClient {
     }
 
     protected HttpClient(URL url, Proxy p, int to) throws IOException {
-        System.out.println("HttpClient >> "+url+" >> "+p+" >> "+to);
-        proxy = (p == null) ? Proxy.NO_PROXY : p;
-        this.host = url.getHost();
-        this.url = url;
-        port = url.getPort();
-        if (port == -1) {
-            port = getDefaultPort();
+        try {
+            proxy = (p == null) ? Proxy.NO_PROXY : p;
+            this.host = url.getHost();
+            this.url = url;
+            port = url.getPort();
+            if (port == -1) {
+                port = getDefaultPort();
+            }
+            setConnectTimeout(to);
+            
+            capture = HttpCapture.getCapture(url);
+            openServer();
+            System.out.println("HttpClient >> "+url+" >> "+p+" >> "+to);
+        } catch(Throwable exc) {
+            System.out.println("HttpClient >> "+url+" >> "+p+" >> "+to+" >!> "+exc);
+            throw exc;
         }
-        setConnectTimeout(to);
-
-        capture = HttpCapture.getCapture(url);
-        openServer();
     }
 
     static protected Proxy newHttpProxy(String proxyHost, int proxyPort,
@@ -464,20 +469,25 @@ public class HttpClient extends NetworkClient {
      */
     @Override
     public void openServer(String server, int port) throws IOException {
-        System.out.println("HttpClient >> open "+server+":"+port);
-        serverSocket = doConnect(server, port);
         try {
-            OutputStream out = serverSocket.getOutputStream();
-            if (capture != null) {
-                out = new HttpCaptureOutputStream(out, capture);
+            serverSocket = doConnect(server, port);
+            try {
+                OutputStream out = serverSocket.getOutputStream();
+                if (capture != null) {
+                    out = new HttpCaptureOutputStream(out, capture);
+                }
+                serverOutput = new PrintStream(
+                    new BufferedOutputStream(out),
+                    false, encoding);
+            } catch (UnsupportedEncodingException e) {
+                throw new InternalError(encoding+" encoding not found", e);
             }
-            serverOutput = new PrintStream(
-                new BufferedOutputStream(out),
-                                         false, encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError(encoding+" encoding not found", e);
+            serverSocket.setTcpNoDelay(true);
+            System.out.println("HttpClient >> open "+server+":"+port);
+        } catch(Throwable exc) {
+            System.out.println("HttpClient >> open "+server+":"+port+" >!> "+exc);
+            throw exc;
         }
-        serverSocket.setTcpNoDelay(true);
     }
 
     /*

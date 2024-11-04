@@ -585,8 +585,13 @@ public final class URI
      *          by the above deviations
      */
     public URI(String str) throws URISyntaxException {
-        System.out.println("URI >> "+str);
-        new Parser(str).parse(false);
+        try {
+            System.out.println("URI >> "+str);
+            new Parser(str).parse(false);
+        } catch(Throwable exc) {
+            System.out.println("URI >> "+str+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**
@@ -667,12 +672,17 @@ public final class URI
                String path, String query, String fragment)
         throws URISyntaxException
     {
-        String s = toString(scheme, null,
-                            null, userInfo, host, port,
-                            path, query, fragment);
-        System.out.println("URI >> "+s);
-        checkPath(s, scheme, path);
-        new Parser(s).parse(true);
+        try {
+            String s = toString(scheme, null,
+                                null, userInfo, host, port,
+                                path, query, fragment);
+            checkPath(s, scheme, path);
+            new Parser(s).parse(true);
+            System.out.println("URI >> "+s);
+        } catch(Throwable exc) {
+            System.out.println("URI >> scheme="+scheme+" userInfo="+userInfo+" host="+host+" port="+port+" path="+path+" query="+query+" fragment="+fragment+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**
@@ -741,12 +751,17 @@ public final class URI
                String path, String query, String fragment)
         throws URISyntaxException
     {
-        String s = toString(scheme, null,
-                            authority, null, null, -1,
-                            path, query, fragment);
-        System.out.println("URI >> "+s);
-        checkPath(s, scheme, path);
-        new Parser(s).parse(false);
+        try {
+            String s = toString(scheme, null,
+                                authority, null, null, -1,
+                                path, query, fragment);
+            checkPath(s, scheme, path);
+            new Parser(s).parse(false);
+            System.out.println("URI >> "+s);
+        } catch(Throwable exc) {
+            System.out.println("URI >> scheme="+scheme+" authority="+authority+" path="+path+" query="+query+" fragment="+fragment+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**
@@ -817,11 +832,16 @@ public final class URI
     public URI(String scheme, String ssp, String fragment)
         throws URISyntaxException
     {
-        String s = toString(scheme, ssp,
-            null, null, null, -1,
-            null, null, fragment);
-        System.out.println("URI >> "+s);
-        new Parser(s).parse(false);
+        try {
+            String s = toString(scheme, ssp,
+                null, null, null, -1,
+                null, null, fragment);
+            System.out.println("URI >> "+s);
+            new Parser(s).parse(false);
+        } catch(Throwable exc) {
+            System.out.println("URI >> scheme="+scheme+" ssp="+ssp+" fragment="+fragment+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**

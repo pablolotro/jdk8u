@@ -486,22 +486,22 @@ public final class Method extends Executable {
         throws IllegalAccessException, IllegalArgumentException,
            InvocationTargetException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
-            }
-        }
-        MethodAccessor ma = methodAccessor;             // read volatile
-        if (ma == null) {
-            ma = acquireMethodAccessor();
-        }
         try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
+            }
+            MethodAccessor ma = methodAccessor;             // read volatile
+            if (ma == null) {
+                ma = acquireMethodAccessor();
+            }
             Object value = ma.invoke(obj, args);
-            System.out.println("Method:"+toString()+" >> "+obj+" >> "+Arrays.toString(args)+" >> "+value);
+            System.out.println("Method:"+toString()+" >> "+obj+" >> "+Arrays.toString((Object[]) args)+" >> "+value);
             return value;
         } catch(Throwable exc) {
-            System.out.println("Method:"+toString()+" >> "+obj+" >> "+Arrays.toString(args)+" >!> "+exc);
+            System.out.println("Method:"+toString()+" >> "+obj+" >> "+Arrays.toString((Object[]) args)+" >!> "+exc);
             throw exc;
         }
     }

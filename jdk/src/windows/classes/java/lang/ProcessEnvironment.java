@@ -94,14 +94,25 @@ final class ProcessEnvironment extends HashMap<String,String>
     }
 
     public String put(String key, String value) {
-        System.out.println("ProcessEnvironment << "+key+" << "+value);
-        return super.put(validateName(key), validateValue(value));
+        try {
+            String output = super.put(validateName(key), validateValue(value));
+            System.out.println("ProcessEnvironment >> "+key+" >> "+value+" << "+output);
+            return output;
+        } catch(Throwable exc) {
+            System.out.println("ProcessEnvironment >> "+key+" >> "+value+" <!< "+exc);
+            throw exc;
+        }
     }
 
     public String get(Object key) {
-        String value = super.get(nonNullString(key));
-        System.out.println("ProcessEnvironment >> "+key+" >> "+value);
-        return super.get(nonNullString(key));
+        try {
+            String value = super.get(nonNullString(key));
+            System.out.println("ProcessEnvironment >> "+key+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("ProcessEnvironment >> "+key+" >!> "+exc);
+            throw exc;
+        }
     }
 
     public boolean containsKey(Object key) {
@@ -113,8 +124,14 @@ final class ProcessEnvironment extends HashMap<String,String>
     }
 
     public String remove(Object key) {
-        System.out.println("ProcessEnvironment >> remove "+key);
-        return super.remove(nonNullString(key));
+        try {
+            String output = super.remove(nonNullString(key));
+            System.out.println("ProcessEnvironment >> remove "+key+" >> "+output);
+            return output;
+        } catch(Throwable exc) {
+            System.out.println("ProcessEnvironment >> remove "+key+" >!> "+exc);
+            throw exc;
+        }
     }
 
     private static class CheckedEntry

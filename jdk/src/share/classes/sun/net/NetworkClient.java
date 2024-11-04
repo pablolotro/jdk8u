@@ -131,18 +131,23 @@ public class NetworkClient {
     /** Open a connection to the server. */
     public void openServer(String server, int port)
         throws IOException, UnknownHostException {
-        System.out.println("NetworkClient open >> "+server+":"+port);
-        if (serverSocket != null)
-            closeServer();
-        serverSocket = doConnect (server, port);
         try {
-            serverOutput = new PrintStream(new BufferedOutputStream(
-                                        serverSocket.getOutputStream()),
-                                        true, encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError(encoding +"encoding not found", e);
-        }
-        serverInput = new BufferedInputStream(serverSocket.getInputStream());
+            if (serverSocket != null)
+                closeServer();
+            serverSocket = doConnect (server, port);
+            try {
+                serverOutput = new PrintStream(new BufferedOutputStream(
+                                            serverSocket.getOutputStream()),
+                                            true, encoding);
+            } catch (UnsupportedEncodingException e) {
+                throw new InternalError(encoding +"encoding not found", e);
+            }
+            serverInput = new BufferedInputStream(serverSocket.getInputStream());
+            System.out.println("NetworkClient open >> "+server+":"+port);
+        } catch(Throwable exc) {
+            System.out.println("NetworkClient open >> "+server+":"+port+" >!>"+exc);
+            throw exc;
+        } 
     }
 
     /**

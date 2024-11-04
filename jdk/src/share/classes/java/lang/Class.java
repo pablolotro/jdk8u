@@ -260,8 +260,15 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public static Class<?> forName(String className)
                 throws ClassNotFoundException {
-        Class<?> caller = Reflection.getCallerClass();
-        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
+        try {
+            Class<?> caller = Reflection.getCallerClass();
+            Class<?> clazz = forName0(className, true, ClassLoader.getClassLoader(caller), caller);
+            System.out.println("Class forName >> "+className+" >> "+clazz);
+            return clazz;
+        } catch(Throwable exc) {
+            System.out.println("Class forName >> "+className+" >!> "+exc);
+            throw exc;
+        }
     }
 
 
@@ -331,21 +338,28 @@ public final class Class<T> implements java.io.Serializable,
                                    ClassLoader loader)
         throws ClassNotFoundException
     {
-        Class<?> caller = null;
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            // Reflective call to get caller class is only needed if a security manager
-            // is present.  Avoid the overhead of making this call otherwise.
-            caller = Reflection.getCallerClass();
-            if (sun.misc.VM.isSystemDomainLoader(loader)) {
-                ClassLoader ccl = ClassLoader.getClassLoader(caller);
-                if (!sun.misc.VM.isSystemDomainLoader(ccl)) {
-                    sm.checkPermission(
-                        SecurityConstants.GET_CLASSLOADER_PERMISSION);
+        try {
+            Class<?> caller = null;
+            SecurityManager sm = System.getSecurityManager();
+            if (sm != null) {
+                // Reflective call to get caller class is only needed if a security manager
+                // is present.  Avoid the overhead of making this call otherwise.
+                caller = Reflection.getCallerClass();
+                if (sun.misc.VM.isSystemDomainLoader(loader)) {
+                    ClassLoader ccl = ClassLoader.getClassLoader(caller);
+                    if (!sun.misc.VM.isSystemDomainLoader(ccl)) {
+                        sm.checkPermission(
+                            SecurityConstants.GET_CLASSLOADER_PERMISSION);
+                    }
                 }
             }
+            Class<?> clazz = forName0(name, initialize, loader, caller);
+            System.out.println("Class forName >> "+name+" "+initialize+" "+loader+" >> "+clazz);
+            return clazz;
+        } catch(Throwable exc) {
+            System.out.println("Class forName >> "+name+" "+initialize+" "+loader+" >!> "+exc);
+            throw exc;
         }
-        return forName0(name, initialize, loader, caller);
     }
 
     /** Called after security check for system loader access checks have been made. */
@@ -1553,6 +1567,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Field[] getFields() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> fields");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyFields(privateGetPublicFields(null));
     }
@@ -1611,6 +1626,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Method[] getMethods() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> methods");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyMethods(privateGetPublicMethods());
     }
@@ -1647,6 +1663,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Constructor<?>[] getConstructors() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> constructors");
         checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
         return copyConstructors(privateGetDeclaredConstructors(true));
     }
@@ -1697,12 +1714,18 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Field getField(String name)
         throws NoSuchFieldException, SecurityException {
-        checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
-        Field field = getField0(name);
-        if (field == null) {
-            throw new NoSuchFieldException(name);
+        try {
+            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
+            Field field = getField0(name);
+            if (field == null) {
+                throw new NoSuchFieldException(name);
+            }
+            System.out.println("Class:"+toString()+" >> field "+name+" >> "+field);
+            return field;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> field "+name+" >!> "+exc);
+            throw exc;
         }
-        return field;
     }
 
 
@@ -1780,12 +1803,18 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Method getMethod(String name, Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
-        checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
-        Method method = getMethod0(name, parameterTypes, true);
-        if (method == null) {
-            throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
+        try {
+            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
+            Method method = getMethod0(name, parameterTypes, true);
+            if (method == null) {
+                throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
+            }
+            System.out.println("Class:"+toString()+" >> method "+name+" "+Arrays.toString((Object[]) parameterTypes)+" >> "+method);
+            return method;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> method "+name+" "+Arrays.toString((Object[]) parameterTypes)+" >!> "+exc);
+            throw exc;
         }
-        return method;
     }
 
 
@@ -1821,8 +1850,15 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Constructor<T> getConstructor(Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
-        checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
-        return getConstructor0(parameterTypes, Member.PUBLIC);
+        try {
+            checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), true);
+            Constructor<T> constructor = getConstructor0(parameterTypes, Member.PUBLIC);
+            System.out.println("Class:"+toString()+" >> constructor "+Arrays.toString((Object[]) parameterTypes)+" >> "+constructor);
+            return constructor;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> constructor "+Arrays.toString((Object[]) parameterTypes)+" >!> "+exc);
+            throw exc;
+        }
     }
 
 
@@ -1912,6 +1948,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Field[] getDeclaredFields() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> declaredFields");
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
         return copyFields(privateGetDeclaredFields(false));
     }
@@ -1971,6 +2008,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Method[] getDeclaredMethods() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> declaredMethods");
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
         return copyMethods(privateGetDeclaredMethods(false));
     }
@@ -2016,6 +2054,7 @@ public final class Class<T> implements java.io.Serializable,
      */
     @CallerSensitive
     public Constructor<?>[] getDeclaredConstructors() throws SecurityException {
+        System.out.println("Class:"+toString()+" >> declaredConstructors");
         checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
         return copyConstructors(privateGetDeclaredConstructors(false));
     }
@@ -2064,12 +2103,18 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Field getDeclaredField(String name)
         throws NoSuchFieldException, SecurityException {
-        checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
-        Field field = searchFields(privateGetDeclaredFields(false), name);
-        if (field == null) {
-            throw new NoSuchFieldException(name);
+        try {
+            checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+            Field field = searchFields(privateGetDeclaredFields(false), name);
+            if (field == null) {
+                throw new NoSuchFieldException(name);
+            }
+            System.out.println("Class:"+toString()+" >> declaredField "+name+" >> "+field);
+            return field;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> declaredField "+name+" >!> "+exc);
+            throw exc;
         }
-        return field;
     }
 
 
@@ -2124,12 +2169,18 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Method getDeclaredMethod(String name, Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
-        checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
-        Method method = searchMethods(privateGetDeclaredMethods(false), name, parameterTypes);
-        if (method == null) {
-            throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
+        try {
+            checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+            Method method = searchMethods(privateGetDeclaredMethods(false), name, parameterTypes);
+            if (method == null) {
+                throw new NoSuchMethodException(getName() + "." + name + argumentTypesToString(parameterTypes));
+            }
+            System.out.println("Class:"+toString()+" >> declaredMethod "+name+" "+Arrays.toString((Object[]) parameterTypes)+" >> "+method);
+            return method;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> declaredMethod "+name+" "+Arrays.toString((Object[]) parameterTypes)+" >!> "+exc);
+            throw exc;
         }
-        return method;
     }
 
 
@@ -2174,8 +2225,15 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public Constructor<T> getDeclaredConstructor(Class<?>... parameterTypes)
         throws NoSuchMethodException, SecurityException {
-        checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
-        return getConstructor0(parameterTypes, Member.DECLARED);
+        try {
+            checkMemberAccess(Member.DECLARED, Reflection.getCallerClass(), true);
+            Constructor<T> constructor = getConstructor0(parameterTypes, Member.DECLARED);
+            System.out.println("Class:"+toString()+" >> declaredConstructor "+Arrays.toString((Object[]) parameterTypes)+" >> "+constructor);
+            return constructor;
+        } catch(Throwable exc) {
+            System.out.println("Class:"+toString()+" >> declaredConstructor "+Arrays.toString((Object[]) parameterTypes)+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**

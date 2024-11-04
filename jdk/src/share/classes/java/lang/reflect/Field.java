@@ -384,15 +384,20 @@ class Field extends AccessibleObject implements Member {
     public Object get(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            Object value = getFieldAccessor(obj).get(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        Object value = getFieldAccessor(obj).get(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -421,15 +426,20 @@ class Field extends AccessibleObject implements Member {
     public boolean getBoolean(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            boolean value = getFieldAccessor(obj).getBoolean(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        boolean value = getFieldAccessor(obj).getBoolean(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -458,15 +468,20 @@ class Field extends AccessibleObject implements Member {
     public byte getByte(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            byte value = getFieldAccessor(obj).getByte(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        byte value = getFieldAccessor(obj).getByte(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -497,15 +512,20 @@ class Field extends AccessibleObject implements Member {
     public char getChar(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            char value = getFieldAccessor(obj).getChar(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        char value = getFieldAccessor(obj).getChar(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -536,15 +556,20 @@ class Field extends AccessibleObject implements Member {
     public short getShort(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            short value = getFieldAccessor(obj).getShort(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        short value = getFieldAccessor(obj).getShort(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -575,15 +600,20 @@ class Field extends AccessibleObject implements Member {
     public int getInt(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            int value = getFieldAccessor(obj).getInt(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        int value = getFieldAccessor(obj).getInt(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -614,15 +644,20 @@ class Field extends AccessibleObject implements Member {
     public long getLong(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            long value = getFieldAccessor(obj).getLong(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        long value = getFieldAccessor(obj).getLong(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -653,15 +688,20 @@ class Field extends AccessibleObject implements Member {
     public float getFloat(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            float value = getFieldAccessor(obj).getFloat(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        float value = getFieldAccessor(obj).getFloat(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -692,15 +732,20 @@ class Field extends AccessibleObject implements Member {
     public double getDouble(Object obj)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            double value = getFieldAccessor(obj).getDouble(obj);
+            System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" >> "+obj+" >!> "+exc);
+            throw exc;
         }
-        double value = getFieldAccessor(obj).getDouble(obj);
-        System.out.println("Field:"+toString()+" >> "+obj+" >> "+value);
-        return value;
     }
 
     /**
@@ -773,14 +818,19 @@ class Field extends AccessibleObject implements Member {
     public void set(Object obj, Object value)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).set(obj, value);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+value);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+value+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+value);
-        getFieldAccessor(obj).set(obj, value);
     }
 
     /**
@@ -811,14 +861,19 @@ class Field extends AccessibleObject implements Member {
     public void setBoolean(Object obj, boolean z)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setBoolean(obj, z);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+z);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+z+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+z);
-        getFieldAccessor(obj).setBoolean(obj, z);
     }
 
     /**
@@ -849,14 +904,19 @@ class Field extends AccessibleObject implements Member {
     public void setByte(Object obj, byte b)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setByte(obj, b);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+b);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+b+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+b);
-        getFieldAccessor(obj).setByte(obj, b);
     }
 
     /**
@@ -887,14 +947,19 @@ class Field extends AccessibleObject implements Member {
     public void setChar(Object obj, char c)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setChar(obj, c);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+c);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+c+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+c);
-        getFieldAccessor(obj).setChar(obj, c);
     }
 
     /**
@@ -925,14 +990,19 @@ class Field extends AccessibleObject implements Member {
     public void setShort(Object obj, short s)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setShort(obj, s);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+s);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+s+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+s);
-        getFieldAccessor(obj).setShort(obj, s);
     }
 
     /**
@@ -963,14 +1033,19 @@ class Field extends AccessibleObject implements Member {
     public void setInt(Object obj, int i)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setInt(obj, i);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+i);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+i+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+i);
-        getFieldAccessor(obj).setInt(obj, i);
     }
 
     /**
@@ -1001,14 +1076,19 @@ class Field extends AccessibleObject implements Member {
     public void setLong(Object obj, long l)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setLong(obj, l);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+l);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+l+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+l);
-        getFieldAccessor(obj).setLong(obj, l);
     }
 
     /**
@@ -1039,14 +1119,19 @@ class Field extends AccessibleObject implements Member {
     public void setFloat(Object obj, float f)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setFloat(obj, f);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+f);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+f+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+f);
-        getFieldAccessor(obj).setFloat(obj, f);
     }
 
     /**
@@ -1077,14 +1162,19 @@ class Field extends AccessibleObject implements Member {
     public void setDouble(Object obj, double d)
         throws IllegalArgumentException, IllegalAccessException
     {
-        if (!override) {
-            if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
-                Class<?> caller = Reflection.getCallerClass();
-                checkAccess(caller, clazz, obj, modifiers);
+        try {
+            if (!override) {
+                if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+                    Class<?> caller = Reflection.getCallerClass();
+                    checkAccess(caller, clazz, obj, modifiers);
+                }
             }
+            getFieldAccessor(obj).setDouble(obj, d);
+            System.out.println("Field:"+toString()+" << "+obj+" << "+d);
+        } catch(Throwable exc) {
+            System.out.println("Field:"+toString()+" << "+obj+" << "+d+" <!< "+exc);
+            throw exc;
         }
-        System.out.println("Field:"+toString()+" << "+obj+" << "+d);
-        getFieldAccessor(obj).setDouble(obj, d);
     }
 
     // security check is done before calling this method
