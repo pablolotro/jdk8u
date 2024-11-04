@@ -1241,28 +1241,34 @@ public class Cipher {
     public final void init(int opmode, Key key, SecureRandom random)
             throws InvalidKeyException
     {
-        initialized = false;
-        checkOpmode(opmode);
+        try {
+            initialized = false;
+            checkOpmode(opmode);
 
-        if (spi != null) {
-            checkCryptoPerm(spi, key);
-            spi.engineInit(opmode, key, random);
-        } else {
-            try {
-                chooseProvider(I_KEY, opmode, key, null, null, random);
-            } catch (InvalidAlgorithmParameterException e) {
-                // should never occur
-                throw new InvalidKeyException(e);
+            if (spi != null) {
+                checkCryptoPerm(spi, key);
+                spi.engineInit(opmode, key, random);
+            } else {
+                try {
+                    chooseProvider(I_KEY, opmode, key, null, null, random);
+                } catch (InvalidAlgorithmParameterException e) {
+                    // should never occur
+                    throw new InvalidKeyException(e);
+                }
             }
-        }
 
-        initialized = true;
-        this.opmode = opmode;
+            initialized = true;
+            this.opmode = opmode;
 
-        if (!skipDebug && pdebug != null) {
-            pdebug.println("Cipher." + transformation + " " +
-                getOpmodeString(opmode) + " algorithm from: " +
-                this.provider.getName());
+            if (!skipDebug && pdebug != null) {
+                pdebug.println("Cipher." + transformation + " " +
+                    getOpmodeString(opmode) + " algorithm from: " +
+                    this.provider.getName());
+            }
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" random="+random);
+        } catch(Throwable exc) {
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" random="+random+" >!> "+exc);
+            throw exc;
         }
     }
 
@@ -1389,23 +1395,29 @@ public class Cipher {
                            SecureRandom random)
             throws InvalidKeyException, InvalidAlgorithmParameterException
     {
-        initialized = false;
-        checkOpmode(opmode);
+        try {
+            initialized = false;
+            checkOpmode(opmode);
 
-        if (spi != null) {
-            checkCryptoPerm(spi, key, params);
-            spi.engineInit(opmode, key, params, random);
-        } else {
-            chooseProvider(I_PARAMSPEC, opmode, key, params, null, random);
-        }
+            if (spi != null) {
+                checkCryptoPerm(spi, key, params);
+                spi.engineInit(opmode, key, params, random);
+            } else {
+                chooseProvider(I_PARAMSPEC, opmode, key, params, null, random);
+            }
 
-        initialized = true;
-        this.opmode = opmode;
+            initialized = true;
+            this.opmode = opmode;
 
-        if (!skipDebug && pdebug != null) {
-            pdebug.println("Cipher." + transformation + " " +
-                getOpmodeString(opmode) + " algorithm from: " +
-                this.provider.getName());
+            if (!skipDebug && pdebug != null) {
+                pdebug.println("Cipher." + transformation + " " +
+                    getOpmodeString(opmode) + " algorithm from: " +
+                    this.provider.getName());
+            }
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" params="+params);
+        } catch(Throwable exc) {
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" params="+params+" >!> "+exc);
+            throw exc;
         }
     }
 
@@ -1532,23 +1544,29 @@ public class Cipher {
                            SecureRandom random)
             throws InvalidKeyException, InvalidAlgorithmParameterException
     {
-        initialized = false;
-        checkOpmode(opmode);
+        try {
+            initialized = false;
+            checkOpmode(opmode);
 
-        if (spi != null) {
-            checkCryptoPerm(spi, key, params);
-            spi.engineInit(opmode, key, params, random);
-        } else {
-            chooseProvider(I_PARAMS, opmode, key, null, params, random);
-        }
+            if (spi != null) {
+                checkCryptoPerm(spi, key, params);
+                spi.engineInit(opmode, key, params, random);
+            } else {
+                chooseProvider(I_PARAMS, opmode, key, null, params, random);
+            }
 
-        initialized = true;
-        this.opmode = opmode;
+            initialized = true;
+            this.opmode = opmode;
 
-        if (!skipDebug && pdebug != null) {
-            pdebug.println("Cipher." + transformation + " " +
-                getOpmodeString(opmode) + " algorithm from: " +
-                this.provider.getName());
+            if (!skipDebug && pdebug != null) {
+                pdebug.println("Cipher." + transformation + " " +
+                    getOpmodeString(opmode) + " algorithm from: " +
+                    this.provider.getName());
+            }
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" params="+params+" random="+random);
+        } catch(Throwable exc) {
+            System.out.println("Cipher >> opmode="+opmode+" key="+key+" params="+params+" random="+random+" >!> "+exc);
+            throw exc;
         }
     }
 
@@ -1689,56 +1707,62 @@ public class Cipher {
                            SecureRandom random)
             throws InvalidKeyException
     {
-        initialized = false;
-        checkOpmode(opmode);
+        try {
+            initialized = false;
+            checkOpmode(opmode);
 
-        // Check key usage if the certificate is of
-        // type X.509.
-        if (certificate instanceof java.security.cert.X509Certificate) {
-            // Check whether the cert has a key usage extension
-            // marked as a critical extension.
-            X509Certificate cert = (X509Certificate)certificate;
-            Set<String> critSet = cert.getCriticalExtensionOIDs();
+            // Check key usage if the certificate is of
+            // type X.509.
+            if (certificate instanceof java.security.cert.X509Certificate) {
+                // Check whether the cert has a key usage extension
+                // marked as a critical extension.
+                X509Certificate cert = (X509Certificate)certificate;
+                Set<String> critSet = cert.getCriticalExtensionOIDs();
 
-            if (critSet != null && !critSet.isEmpty()
-                && critSet.contains(KEY_USAGE_EXTENSION_OID)) {
-                boolean[] keyUsageInfo = cert.getKeyUsage();
-                // keyUsageInfo[2] is for keyEncipherment;
-                // keyUsageInfo[3] is for dataEncipherment.
-                if ((keyUsageInfo != null) &&
-                    (((opmode == Cipher.ENCRYPT_MODE) &&
-                      (keyUsageInfo.length > 3) &&
-                      (keyUsageInfo[3] == false)) ||
-                     ((opmode == Cipher.WRAP_MODE) &&
-                      (keyUsageInfo.length > 2) &&
-                      (keyUsageInfo[2] == false)))) {
-                    throw new InvalidKeyException("Wrong key usage");
+                if (critSet != null && !critSet.isEmpty()
+                    && critSet.contains(KEY_USAGE_EXTENSION_OID)) {
+                    boolean[] keyUsageInfo = cert.getKeyUsage();
+                    // keyUsageInfo[2] is for keyEncipherment;
+                    // keyUsageInfo[3] is for dataEncipherment.
+                    if ((keyUsageInfo != null) &&
+                        (((opmode == Cipher.ENCRYPT_MODE) &&
+                        (keyUsageInfo.length > 3) &&
+                        (keyUsageInfo[3] == false)) ||
+                        ((opmode == Cipher.WRAP_MODE) &&
+                        (keyUsageInfo.length > 2) &&
+                        (keyUsageInfo[2] == false)))) {
+                        throw new InvalidKeyException("Wrong key usage");
+                    }
                 }
             }
-        }
 
-        PublicKey publicKey =
-            (certificate==null? null:certificate.getPublicKey());
+            PublicKey publicKey =
+                (certificate==null? null:certificate.getPublicKey());
 
-        if (spi != null) {
-            checkCryptoPerm(spi, publicKey);
-            spi.engineInit(opmode, publicKey, random);
-        } else {
-            try {
-                chooseProvider(I_CERT, opmode, publicKey, null, null, random);
-            } catch (InvalidAlgorithmParameterException e) {
-                // should never occur
-                throw new InvalidKeyException(e);
+            if (spi != null) {
+                checkCryptoPerm(spi, publicKey);
+                spi.engineInit(opmode, publicKey, random);
+            } else {
+                try {
+                    chooseProvider(I_CERT, opmode, publicKey, null, null, random);
+                } catch (InvalidAlgorithmParameterException e) {
+                    // should never occur
+                    throw new InvalidKeyException(e);
+                }
             }
-        }
 
-        initialized = true;
-        this.opmode = opmode;
+            initialized = true;
+            this.opmode = opmode;
 
-        if (!skipDebug && pdebug != null) {
-            pdebug.println("Cipher." + transformation + " " +
-                getOpmodeString(opmode) + " algorithm from: " +
-                this.provider.getName());
+            if (!skipDebug && pdebug != null) {
+                pdebug.println("Cipher." + transformation + " " +
+                    getOpmodeString(opmode) + " algorithm from: " +
+                    this.provider.getName());
+            }
+            System.out.println("Cipher >> opmode="+opmode+" cert="+cert+" random="+random);
+        } catch(Throwable exc) {
+            System.out.println("Cipher >> opmode="+opmode+" cert="+cert+" random="+random+" >!> "+exc);
+            throw exc;
         }
     }
 
@@ -2045,10 +2069,17 @@ public class Cipher {
      */
     public final byte[] doFinal()
             throws IllegalBlockSizeException, BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        chooseFirstProvider();
-        return spi.engineDoFinal(null, 0, 0);
+            chooseFirstProvider();
+            byte[] value = spi.engineDoFinal(null, 0, 0);
+            System.out.println("Cipher::doFinal >> null 0 0 >> "+Arrays.toString(value));
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> null 0 0 >!> "+exc);
+            throw exc;
+        }
     }
 
     /**
@@ -2104,15 +2135,22 @@ public class Cipher {
     public final int doFinal(byte[] output, int outputOffset)
             throws IllegalBlockSizeException, ShortBufferException,
                BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        // Input sanity check
-        if ((output == null) || (outputOffset < 0)) {
-            throw new IllegalArgumentException("Bad arguments");
+            // Input sanity check
+            if ((output == null) || (outputOffset < 0)) {
+                throw new IllegalArgumentException("Bad arguments");
+            }
+
+            chooseFirstProvider();
+            byte[] value = spi.engineDoFinal(null, 0, 0, output, outputOffset);
+            System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >> "+Arrays.toString(value));
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >!> "+exc);
+            throw exc;
         }
-
-        chooseFirstProvider();
-        return spi.engineDoFinal(null, 0, 0, output, outputOffset);
     }
 
     /**
@@ -2157,15 +2195,22 @@ public class Cipher {
      */
     public final byte[] doFinal(byte[] input)
             throws IllegalBlockSizeException, BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        // Input sanity check
-        if (input == null) {
-            throw new IllegalArgumentException("Null input buffer");
+            // Input sanity check
+            if (input == null) {
+                throw new IllegalArgumentException("Null input buffer");
+            }
+
+            chooseFirstProvider();
+            byte[] value = spi.engineDoFinal(input, 0, input.length);
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" 0 "+input.length+" >> "+Arrays.toString(value));
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" 0 "+input.length+" >!> "+exc);
+            throw exc;
         }
-
-        chooseFirstProvider();
-        return spi.engineDoFinal(input, 0, input.length);
     }
 
     /**
@@ -2214,16 +2259,23 @@ public class Cipher {
      */
     public final byte[] doFinal(byte[] input, int inputOffset, int inputLen)
             throws IllegalBlockSizeException, BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        // Input sanity check
-        if (input == null || inputOffset < 0
-            || inputLen > (input.length - inputOffset) || inputLen < 0) {
-            throw new IllegalArgumentException("Bad arguments");
+            // Input sanity check
+            if (input == null || inputOffset < 0
+                || inputLen > (input.length - inputOffset) || inputLen < 0) {
+                throw new IllegalArgumentException("Bad arguments");
+            }
+
+            chooseFirstProvider();
+            byte[] value = spi.engineDoFinal(input, inputOffset, inputLen);
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" >> "+Arrays.toString(value));
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" >!> "+exc);
+            throw exc;
         }
-
-        chooseFirstProvider();
-        return spi.engineDoFinal(input, inputOffset, inputLen);
     }
 
     /**
@@ -2288,17 +2340,23 @@ public class Cipher {
                              byte[] output)
             throws ShortBufferException, IllegalBlockSizeException,
             BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        // Input sanity check
-        if (input == null || inputOffset < 0
-            || inputLen > (input.length - inputOffset) || inputLen < 0) {
-            throw new IllegalArgumentException("Bad arguments");
+            // Input sanity check
+            if (input == null || inputOffset < 0
+                || inputLen > (input.length - inputOffset) || inputLen < 0) {
+                throw new IllegalArgumentException("Bad arguments");
+            }
+
+            chooseFirstProvider();
+            int value = spi.engineDoFinal(input, inputOffset, inputLen, output, 0);
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" "+Arrays.toString(output)+" 0 >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" "+Arrays.toString(output)+" 0 >!> "+exc);
+            throw exc;
         }
-
-        chooseFirstProvider();
-        return spi.engineDoFinal(input, inputOffset, inputLen,
-                                       output, 0);
     }
 
     /**
@@ -2367,18 +2425,24 @@ public class Cipher {
                              byte[] output, int outputOffset)
             throws ShortBufferException, IllegalBlockSizeException,
             BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        // Input sanity check
-        if (input == null || inputOffset < 0
-            || inputLen > (input.length - inputOffset) || inputLen < 0
-            || outputOffset < 0) {
-            throw new IllegalArgumentException("Bad arguments");
+            // Input sanity check
+            if (input == null || inputOffset < 0
+                || inputLen > (input.length - inputOffset) || inputLen < 0
+                || outputOffset < 0) {
+                throw new IllegalArgumentException("Bad arguments");
+            }
+
+            chooseFirstProvider();
+            int value = spi.engineDoFinal(input, inputOffset, inputLen, output, outputOffset);
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" "+Arrays.toString(output)+" "+outputOffset+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> "+Arrays.toString(input)+" "+inputOffset+" "+inputLen+" "+Arrays.toString(output)+" "+outputOffset+" >!> "+exc);
+            throw exc;
         }
-
-        chooseFirstProvider();
-        return spi.engineDoFinal(input, inputOffset, inputLen,
-                                       output, outputOffset);
     }
 
     /**
@@ -2446,21 +2510,28 @@ public class Cipher {
     public final int doFinal(ByteBuffer input, ByteBuffer output)
             throws ShortBufferException, IllegalBlockSizeException,
             BadPaddingException {
-        checkCipherState();
+        try {
+            checkCipherState();
 
-        if ((input == null) || (output == null)) {
-            throw new IllegalArgumentException("Buffers must not be null");
-        }
-        if (input == output) {
-            throw new IllegalArgumentException("Input and output buffers must "
-                + "not be the same object, consider using buffer.duplicate()");
-        }
-        if (output.isReadOnly()) {
-            throw new ReadOnlyBufferException();
-        }
+            if ((input == null) || (output == null)) {
+                throw new IllegalArgumentException("Buffers must not be null");
+            }
+            if (input == output) {
+                throw new IllegalArgumentException("Input and output buffers must "
+                    + "not be the same object, consider using buffer.duplicate()");
+            }
+            if (output.isReadOnly()) {
+                throw new ReadOnlyBufferException();
+            }
 
-        chooseFirstProvider();
-        return spi.engineDoFinal(input, output);
+            chooseFirstProvider();
+            int value = spi.engineDoFinal(input, output);
+            System.out.println("Cipher::doFinal >> "+input+" "+output+" >> "+value);
+            return value;
+        } catch(Throwable exc) {
+            System.out.println("Cipher::doFinal >> "+input+" "+output+" >!> "+exc);
+            throw exc;
+        }
     }
 
     /**
