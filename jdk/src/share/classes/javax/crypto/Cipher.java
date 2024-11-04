@@ -1759,9 +1759,9 @@ public class Cipher {
                     getOpmodeString(opmode) + " algorithm from: " +
                     this.provider.getName());
             }
-            System.out.println("Cipher >> opmode="+opmode+" cert="+cert+" random="+random);
+            System.out.println("Cipher >> opmode="+opmode+" cert="+certificate+" random="+random);
         } catch(Throwable exc) {
-            System.out.println("Cipher >> opmode="+opmode+" cert="+cert+" random="+random+" >!> "+exc);
+            System.out.println("Cipher >> opmode="+opmode+" cert="+certificate+" random="+random+" >!> "+exc);
             throw exc;
         }
     }
@@ -2145,7 +2145,7 @@ public class Cipher {
 
             chooseFirstProvider();
             int value = spi.engineDoFinal(null, 0, 0, output, outputOffset);
-            System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >> "+Arrays.toString(value));
+            System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >> "+value);
             return value;
         } catch(Throwable exc) {
             System.out.println("Cipher::doFinal >> null 0 0 "+Arrays.toString(output)+" "+outputOffset+" >!> "+exc);
